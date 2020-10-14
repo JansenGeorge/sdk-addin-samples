@@ -620,7 +620,7 @@ geotab.addin.proximity = () => {
             deviceLookup = {};
 
             toggleLoading(false);
-            document.getElementById("text-to-change").innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" disabled="disabled" /></label>'
+            elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" disabled="disabled" /></label>'
         },
 
         /**
