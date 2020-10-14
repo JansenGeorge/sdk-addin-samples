@@ -454,7 +454,7 @@ geotab.addin.proximity = () => {
                 search: {
                     fromDate: new Date().toISOString(),
                     groups: state.getGroupFilter(),
-                    name: searchoption_characters,
+                    name: manualSearch,
                 }
             }, newDevices => {
                 if (!newDevices || newDevices.length < 1) {
