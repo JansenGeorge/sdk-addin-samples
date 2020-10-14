@@ -23,6 +23,7 @@ geotab.addin.proximity = () => {
     let elError;
     let elLoading;
     let elExport;
+    let elProximitySelectToggle;
 
     let radiusFactor = 250;
     let deviceLookup = {};
@@ -410,6 +411,7 @@ geotab.addin.proximity = () => {
         elVehicleMultiSelectContainer = document.getElementById('proximity-div-vehicles');
         elProximityCancel = document.getElementById('proximity-cancel');
         elExport = document.getElementById('proximity-run-report');
+        elProximitySelectToggle = document.getElementById("proximity-select-toggle")
 
         // date inputs
         let now = new Date();
@@ -437,12 +439,13 @@ geotab.addin.proximity = () => {
         // events
         //Creating function with wildcard search for vehicles 
         elVehicleMultiSelectContainer.addEventListener('keyup', e => {
-            let searchoption_characters;
-            searchoption_characters = "%" + e.target.value + "%"
-            if (searchoption_characters === "%%") {
-                elProximitySelectAll.innerHTML = 'Please select something'
+            let manualSearch;
+            manualSearch = "%" + e.target.value + "%"
+            console.log(manualSearch)
+            if (manualSearch === "%%" || manualSearch === null) {
+                elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" disabled="disabled" /></label>'
             } else {
-                elProximitySelectAll.innerHTML = 'Select All <input type="checkbox" name="proximity-select-all" id="proximity-select-all" />'
+                elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" /></label>'
             }
 
 
@@ -616,36 +619,8 @@ geotab.addin.proximity = () => {
             isCancelled = true;
             deviceLookup = {};
 
-            toggleLoading(true);
-
-            api.call('Get', {
-                typeName: 'Device',
-                resultsLimit: 1000,
-                search: {
-                    fromDate: new Date().toISOString(),
-                    groups: state.getGroupFilter()
-                }
-            }, devices => {
-                if (!devices || devices.length < 1) {
-                    return;
-                }
-
-                let deviceChoices = devices.map(device => {
-                    deviceLookup[device.id] = device;
-                    return { 'value': device.id, 'label': encodeHTML(device.name) };
-                });
-
-                vehicleMultiselect = vehicleMultiselect.setChoices(deviceChoices, 'value', 'label', true);
-
-                toggleLoading(false);
-            }, error => {
-                logger(error);
-                toggleLoading(false);
-            });
-
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 800);
+            toggleLoading(false);
+            document.getElementById("text-to-change").innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" disabled="disabled" /></label>'
         },
 
         /**
