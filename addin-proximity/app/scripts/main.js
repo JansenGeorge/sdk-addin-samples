@@ -439,6 +439,12 @@ geotab.addin.proximity = () => {
         elVehicleMultiSelectContainer.addEventListener('keyup', e => {
             let searchoption_characters;
             searchoption_characters = "%" + e.target.value + "%"
+            if (searchoption_characters === "%%") {
+                elProximitySelectAll.innerHTML = 'Please select something'
+            } else {
+                elProximitySelectAll.innerHTML = 'Select All <input type="checkbox" name="proximity-select-all" id="proximity-select-all" />'
+            }
+
 
             api.call('Get', {
                 typeName: 'Device',
