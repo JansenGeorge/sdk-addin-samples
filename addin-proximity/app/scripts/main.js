@@ -182,6 +182,7 @@ geotab.addin.proximity = () => {
         logger('');
         // Resetting blobData
         blobData = ['DeviceID, Date, Time, Latitude, Longitude\n'];
+        clearMap();
 
         if (elAddressInput.value === '') {
             return;
@@ -197,7 +198,7 @@ geotab.addin.proximity = () => {
         let dateTo = new Date(elDateToInput.value + ':00Z');
         let utcTo = new Date(dateTo.setMinutes(dateTo.getMinutes() + new Date().getTimezoneOffset())).toISOString();
 
-        clearMap();
+
         toggleLoading(true);
 
         let calculateAndRender = async(result) => {
@@ -440,15 +441,7 @@ geotab.addin.proximity = () => {
         //Creating function with wildcard search for vehicles 
         elVehicleMultiSelectContainer.addEventListener('keyup', e => {
             let manualSearch;
-            manualSearch = "%" + e.target.value + "%"
-            console.log(manualSearch)
-            if (manualSearch === "%%" || manualSearch === null) {
-                elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" disabled="disabled" /></label>'
-            } else {
-                elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" /></label>'
-            }
-
-
+            manualSearch = "%" + e.target.value + "%";
             api.call('Get', {
                 typeName: 'Device',
                 search: {
@@ -466,7 +459,22 @@ geotab.addin.proximity = () => {
                     return { 'value': device.id, 'label': encodeHTML(device.name) };
                 });
 
-                vehicleMultiselect = vehicleMultiselect.setChoices(deviceChoices, 'value', 'label', true);
+                elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" /></label>';
+                vehicleMultiselect.setChoices(deviceChoices, 'value', 'label', true);
+
+                if (manualSearch === "%%") {
+                    deviceLookup = {};
+                    elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" disabled="disabled" /></label>';
+                    vehicleMultiselect.clearStore();
+
+                }
+                // else {
+                //     elProximitySelectToggle.innerHTML = '<label for="proximity-select-all">Select all <input type="checkbox" name="proximity-select-all" id="proximity-select-all" /></label>';
+                //     vehicleMultiselect.setChoices(deviceChoices, 'value', 'label', true);
+
+                // }
+                // vehicleMultiselect = vehicleMultiselect.setChoices(deviceChoices, 'value', 'label', true);
+                toggleLoading(false);
 
             }, error => {
                 logger(error);
